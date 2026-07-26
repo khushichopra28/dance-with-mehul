@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Dance With Mehul — movement, memories and choreography.">
+  <title>Dance With Mehul</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=DM+Mono:wght@400;500&family=DM+Serif+Display:ital@0;1&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="cursor-sparkles" aria-hidden="true"></div>
+  <header class="site-header">
+    <a href="#home" aria-label="Dance With Mehul home"><img src="logo.png" alt="Dance with Mehul logo" class="site-logo"></a>
+    <button class="menu-button" id="menuButton" aria-expanded="false" aria-controls="mainNav"><span></span><span></span></button>
+    <nav id="mainNav" class="main-nav" aria-label="Main navigation">
+      <a href="#home">Home</a><a href="#about">About</a><a href="#dance">Dance with Mehul</a><a href="#performances">Performances</a><a href="#gallery">Gallery</a><a href="#testimonials">Testimonials</a><a href="#contact">Contact</a>
+    </nav>
+    <a class="header-note" href="#contact">Let's move <span>↗</span></a>
+  </header>
+
+  <main>
+    <section class="hero paper-section" id="home">
+      <div class="hero-doodle doodle-one">✦</div><div class="hero-doodle doodle-two">♡</div><div class="hero-doodle doodle-three">♪</div>
+      <div class="hero-grid">
+      <img src="hero.png" alt="Hero image" class="hero-image">
+        <div class="hero-copy">
+          <p class="eyebrow">a little place for all things movement</p>
+          <h1><em>Dance</em><span>WITH</span><strong>MEHUL</strong></h1>
+          <p class="hero-intro">Stories in eight counts, made with a whole lot of heart.</p>
+          <a class="scribble-link" href="#about">come on in <b>→</b></a>
+          <svg class="hero-arrow" viewBox="0 0 170 80" aria-hidden="true"><path d="M8 10c23 45 78 55 144 42M142 37l12 15-20 4"/></svg>
+        </div>
+      </div>
+      <svg class="ribbon" viewBox="0 0 1440 170" preserveAspectRatio="none" aria-hidden="true"><path d="M-30 63C180 144 248 6 429 73c149 55 238 84 382 11 178-90 288-29 465 41 83 33 139 3 192-39"/><path class="ribbon-thin" d="M-30 90C180 171 248 33 429 100c149 55 238 84 382 11 178-90 288-29 465 41 83 33 139 3 192-39"/></svg>
+      <div class="torn-edge" aria-hidden="true"></div>
+    </section>
+
+    <section class="about section-pad paper-section" id="about">
+      <div class="journey journey-about" aria-hidden="true"></div>
+      <div class="section-kicker">01 / the little story</div>
+      <div class="about-layout reveal">
+        <div class="about-title"><p>nice to meet you,</p><h2>I'm <i>Mehul.</i></h2><span class="star-sticker">✦</span></div>
+        <article class="letter-card">
+          <div class="paperclip">⌇</div><p>I believe dancing is less about getting every count perfect and more about finding the bit of music that makes you forget you are even thinking.</p><p>From packed studios to tiny bedroom rehearsals, I make choreography for people who want to feel a little more like themselves.</p><span class="signature">with rhythm,<br>Mehul</span>
+        </article>
+        <figure class="about-photo polaroid"><img src="https://images.unsplash.com/photo-1535525153412-5a42439a210d?auto=format&fit=crop&w=650&q=85" alt="Dance rehearsal"><figcaption>one more time!</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="dance section-pad" id="dance">
+      <div class="section-heading reveal"><div><span class="section-kicker">02 / what we make</span><h2>Find your<br><i>own flow.</i></h2></div><p>Classes are a friendly mix of technique, play, confidence and the joy of moving together.</p></div>
+      <div class="class-notes reveal">
+        <article class="class-note note-1"><span>01</span><h3>Choreo<br>classes</h3><p>Learn, perform, repeat.</p><a href="#contact">join in ↗</a></article>
+        <article class="class-note note-2"><span>02</span><h3>Private<br>sessions</h3><p>Made just for your rhythm.</p><a href="#contact">say hello ↗</a></article>
+        <article class="class-note note-3"><span>03</span><h3>Workshops<br>& events</h3><p>A room full of good energy.</p><a href="#contact">see dates ↗</a></article>
+      </div>
+    </section>
+
+    <section class="performances section-pad paper-section" id="performances">
+      <div class="section-heading reveal"><div><span class="section-kicker">03 / on repeat</span><h2>Small clips,<br><i>big feelings.</i></h2></div><span class="hand-label">hover to pause ↓</span></div>
+      <div class="reels-wrap"><div class="reels row-one" id="reelsOne"></div><div class="reels row-two" id="reelsTwo"></div></div>
+    </section>
+
+    <section class="gallery section-pad" id="gallery">
+      <div class="section-heading reveal"><div><span class="section-kicker">04 / our pinboard</span><h2>Here for the<br><i>memories.</i></h2></div><p>A few favourite fragments from the studio, the stage and everything in-between.</p></div>
+      <div class="gallery-board reveal" id="galleryBoard"></div>
+    </section>
+
+    <section class="testimonials section-pad paper-section" id="testimonials">
+      <div class="section-heading reveal"><div><span class="section-kicker">05 / sweet notes</span><h2>Words that<br><i>stay with me.</i></h2></div></div>
+      <div class="testimonial-grid reveal" id="testimonialGrid"></div>
+    </section>
+
+    <section class="contact section-pad" id="contact">
+      <div class="contact-card reveal"><span class="tape tape-contact"></span><div class="contact-copy"><span class="section-kicker">06 / your turn</span><h2>Shall we<br><i>dance?</i></h2><p>Ask about a class, a collaboration or your next favourite routine.</p><a href="mailto:hello@dancewithmehul.com"> mehulrbhandari@gmail.com ↗</a><div class="social-links"><a href="#">instagram</a><a href="#">youtube</a><a href="#">whatsapp</a></div></div><form id="contactForm"><label>Your name<input required type="text" name="name" placeholder="what should I call you?"></label><label>Email address<input required type="email" name="email" placeholder="you@email.com"></label><label>Tell me everything<textarea required name="message" rows="4" placeholder="I'm looking for..."></textarea></label><button type="submit">send a little note <span>→</span></button><p class="form-message" aria-live="polite"></p></form></div>
+    </section>
+  </main>
+  <footer><span>Dance With Mehul</span><em>made in the rhythm of things</em><span>© 2026</span></footer>
+  <script src="script.js"></script>
+</body>
+</html>
