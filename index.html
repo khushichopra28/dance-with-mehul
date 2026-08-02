@@ -51,6 +51,14 @@
       </div>
     </section>
 
+    <section class="team section-pad paper-section" id="team">
+      <div class="section-heading reveal">
+        <div><span class="section-kicker">01.5 / the people behind the moves</span><h2>Meet the<br><i>whole crew.</i></h2></div>
+        <p>The team that makes every rehearsal, every sangeet night, and every last-minute costume fix actually happen.</p>
+      </div>
+      <div class="team-wrap"><div class="team-row" id="teamGrid"></div></div>
+    </section>
+
     <section class="dance section-pad" id="dance">
       <div class="section-heading reveal"><div><span class="section-kicker">02 / wedding dance services</span><h2>Dance your<br><i>celebration.</i></h2></div><p>From the sangeet stage to the couple's first dance, every wedding moment deserves choreography that brings out the joy, the emotion, and the community around you.</p></div>
       <div class="class-notes reveal">
@@ -61,7 +69,7 @@
     </section>
 
     <section class="performances section-pad paper-section" id="performances">
-      <div class="section-heading reveal"><div><span class="section-kicker">03 / on repeat</span><h2>Small clips,<br><i>big feelings.</i></h2></div><span class="hand-label">hover to pause ↓</span></div>
+      <div class="section-heading reveal"><div><span class="section-kicker">03 / on repeat</span><h2>Small clips,<br><i>big feelings.</i></h2></div><span class="hand-label">tap a clip to watch ↓</span></div>
       <div class="reels-wrap"><div class="reels row-one" id="reelsOne"></div><div class="reels row-two" id="reelsTwo"></div></div>
     </section>
 
@@ -84,7 +92,20 @@
     </section>
 
     <section class="contact section-pad" id="contact">
-      <div class="contact-card reveal"><span class="tape tape-contact"></span><div class="contact-copy"><span class="section-kicker">06 / let's plan your dance</span><h2>Choreograph your<br><i>big day.</i></h2><p>Ready to create a wedding dance moment your family will never forget? Reach out and let's make it happen.</p><a href="mailto:hello@dancewithmehul.com"> mehulrbhandari@gmail.com ↗</a><div class="social-links"><a href="#">instagram</a><a href="#">youtube</a><a href="#">whatsapp</a></div></div><form id="contactForm"><label>Your name<input required type="text" name="name" placeholder="your name (or the couple's names!)"></label><label>Email address<input required type="email" name="email" placeholder="you@email.com"></label><label>Tell me everything<textarea required name="message" rows="4" placeholder="tell me about your wedding dance vision..."></textarea></label><button type="submit">send your wedding dance inquiry <span>→</span></button><p class="form-message" aria-live="polite"></p></form></div>
+      <div class="contact-card reveal"><span class="tape tape-contact"></span><div class="contact-copy"><span class="section-kicker">06 / let's plan your dance</span><h2>Choreograph your<br><i>big day.</i></h2><p>Ready to create a wedding dance moment your family will never forget? Reach out and let's make it happen.</p><a href="mailto:hello@dancewithmehul.com"> mehulrbhandari@gmail.com ↗</a><div class="social-links" id="socialLinks">
+        <a href="https://www.instagram.com/mehull_jain/" target="_blank" rel="noopener noreferrer" data-social="instagram">
+          instagram
+          <span class="social-pop-icon">📷</span>
+        </a>
+        <a href="https://wa.me/918056707070" target="_blank" rel="noopener noreferrer" data-social="whatsapp">
+          whatsapp
+          <span class="social-pop-icon">💬</span>
+        </a>
+        <a href="tel:+918056707070" data-social="call">
+          call
+          <span class="social-pop-icon">📞</span>
+        </a>
+      </div></div><form id="contactForm"><label>Your name<input required type="text" name="name" placeholder="your name (or the couple's names!)"></label><label>Email address<input required type="email" name="email" placeholder="you@email.com"></label><label>Tell me everything<textarea required name="message" rows="4" placeholder="tell me about your wedding dance vision..."></textarea></label><button type="submit">send your wedding dance inquiry <span>→</span></button><p class="form-message" aria-live="polite"></p></form></div>
     </section>
 
     <section class="scatter section-pad paper-section" id="scatter">
@@ -94,6 +115,10 @@
           <h2>Every dance<br><i>tells a story.</i></h2>
         </div>
         <p class="scatter-quote">"Dance is the hidden language of the soul — every count, every step, is a sentence in a story only the body can tell."</p>
+      </div>
+      <div class="scatter-message" aria-hidden="true">
+        <p>Every couple has their own <em>rhythm.</em></p>
+        <p class="scatter-message-sign">— with love, Mehul</p>
       </div>
       <div class="scatter-board reveal" id="scatterBoard"></div>
     </section>
@@ -111,7 +136,24 @@
       </div>
     </section>
   </main>
-  <footer><span>Dance With Mehul</span><em>wedding dances made with love &amp; rhythm</em><span>© 2026</span></footer>
+<footer class="site-footer">
+    <div class="footer-top">
+      <img src="logo.png" alt="Dance with Mehul logo" class="footer-logo">
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="#home">Home</a><a href="#about">About</a><a href="#dance">Dance with Mehul</a><a href="#performances">Performances</a><a href="#gallery">Gallery</a><a href="#testimonials">Testimonials</a><a href="#contact">Contact</a>
+      </nav>
+    </div>
+    <p class="footer-tagline">made with love and lot of rehearsals.</p>
+    <div class="footer-bottom">
+      <span>Dance With Mehul</span>
+      <span>© 2026</span>
+    </div>
+  </footer>
+  <audio id="bgMusic" src="audio/music.mp3" preload="auto"></audio>
+  <button class="music-toggle" id="musicToggle" aria-label="Toggle background music" aria-pressed="false">
+    <span class="music-icon music-icon-on">♪</span>
+    <span class="music-icon music-icon-off">✕</span>
+  </button>
   <script src="script.js"></script>
 </body>
 </html>
