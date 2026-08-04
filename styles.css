@@ -96,10 +96,14 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.48;ba
   .section-pad{padding:90px 20px}
   .header-note{display:none}
   .main-nav{width:84vw;padding:92px 22px 36px}
-  .hero{padding:100px 20px 46px}
+  .hero{min-height:560px;padding:100px 20px 90px}
+  .hero-copy{margin-bottom:40px;z-index:1}
   .hero-copy h1 em{font-size:clamp(60px,17vw,80px);letter-spacing:-5px;margin-left:-4px}
   .hero-copy h1 strong{font-size:clamp(42px,13vw,56px)}
+  .hero-copy h1 span{text-align:center;align-self:center}
+  .hero-image{min-height:340px;max-height:62vh;position:relative;z-index:1}
   .hero-intro{max-width:100%}
+  .ribbon{z-index:0}
   .about{padding-top:110px}
   .about-title h2,.section-heading h2,.contact h2{font-size:clamp(38px,10vw,52px)}
   .letter-card{padding:30px 20px 26px;font-size:13px;transform:rotate(-1deg)}
