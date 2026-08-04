@@ -2,7 +2,7 @@ const reelVideos = [
   ['reels/IMG_7630.mp4','after class'], ['reels/IMG_7631.mp4','on stage'], ['reels/IMG_7632.mp4','the warm up'], ['reels/IMG_7633.mp4','full out'], ['reels/IMG_7634.mp4','one more run'], ['reels/IMG_7635.mp4','dance break'], ['reels/IMG_7636.mp4','after class'], ['reels/IMG_7637.mp4','on stage'], ['reels/IMG_7638.mp4','the warm up'], ['reels/IMG_7678.mp4','line up'], ['reels/IMG_7679.mp4','count it out'], ['reels/IMG_7680.mp4','side by side'], ['reels/IMG_7681.mp4','the dip'], ['reels/IMG_7682.mp4','freeze frame'], ['reels/IMG_9181.mp4','sneak peek']
 ];
 const galleryImages = [
-  ['images/IMG_1298.JPG.jpeg','sangeet prep'], ['images/IMG_2569.JPG.jpeg','family dance'], ['images/IMG_6114.JPG.jpeg','the big day'], ['images/IMG_6621.JPG.jpeg','stage ready'], ['images/Screenshot 2026-08-02 002030.jpg','all smiles'], ['images/Screenshot 2026-08-02 002042.jpg','dancing together'], ['images/IMG_1257.jpg','getting ready'], ['images/IMG_1390.jpg','golden hour'], ['images/IMG_4602.jpg','on the floor'], ['images/IMG_4693.jpg','candid moment'], ['images/IMG_5385.jpg','happy tears'], ['images/IMG_5349.jpg','family circle'], ['images/IMG_8896.jpg','dressed up'], ['images/IMG_8897.jpg','full circle'], ['images/IMG_9019.jpg','the countdown'], ['images/IMG_9116.jpg','spotlight'], ['images/IMG_9138.jpg','lift off'], ['images/IMG_9265.jpg','sweet finale'], ['images/IMG_9275.jpg','hands up'], ['images/IMG_9394.jpg','curtain call']
+  ['images/IMG_1298.JPG.jpeg','sangeet prep'], ['images/IMG_2569.JPG.jpeg','family dance'], ['images/IMG_6114.JPG.jpeg','the big day'], ['images/IMG_6621.JPG.jpeg','stage ready'], ['images/Screenshot 2026-08-02 002030.jpg','all smiles'], ['images/Screenshot 2026-08-02 002042.jpg','dancing together']
 ];
 const testimonials = [
   ['“Mehul choreographed our entire sangeet — from my entry to the family number. Every single person felt included, even the ones with two left feet!”','Ananya & Rohan, wedding sangeet'],
@@ -17,12 +17,13 @@ document.querySelector('#galleryBoard').innerHTML = galleryImages.map(([src,labe
 document.querySelector('#testimonialGrid').innerHTML = testimonials.map(([quote, name], index) => `<article class="testimonial" style="--r:${[-2,2,-1][index]}deg"><blockquote>${quote}</blockquote><footer>— ${name}</footer></article>`).join('');
 
 const focusItems = [
-  { src: 'images/IMG_1298.JPG.jpeg', title: 'Sangeet Prep' },
-  { src: 'images/IMG_2569.JPG.jpeg', title: 'Family Dance' },
-  { src: 'images/IMG_6114.JPG.jpeg', title: 'The Big Day' },
-  { src: 'images/IMG_6621.JPG.jpeg', title: 'Stage Ready' },
-  { src: 'images/Screenshot 2026-08-02 002030.jpg', title: 'All Smiles' },
-  { src: 'images/Screenshot 2026-08-02 002042.jpg', title: 'Dancing Together' }
+  { src: 'images/IMG_1257.jpg', title: 'Getting Ready' },
+  { src: 'images/IMG_1390.jpg', title: 'Golden Hour' },
+  { src: 'images/IMG_4602.jpg', title: 'On The Floor' },
+  { src: 'images/IMG_4693.jpg', title: 'Candid Moment' },
+  { src: 'images/IMG_5385.jpg', title: 'Happy Tears' },
+  { src: 'images/IMG_5349.jpg', title: 'Family Circle' },
+  { src: 'images/IMG_8896.jpg', title: 'Dressed Up' }
 ];
 
 const focusMarkup = focusItems.map(item => `
@@ -37,25 +38,43 @@ focusRow.innerHTML = focusMarkup + focusMarkup;
 const focusWrapEl = document.querySelector('.focus-wrap');
 const focusRowEl = document.querySelector('#focusRow');
 let focusHoverTimeout = null;
+const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-focusWrapEl.addEventListener('mouseenter', () => {
-  focusRowEl.classList.add('js-paused');
-});
+if (finePointer) {
+  focusWrapEl.addEventListener('mouseenter', () => {
+    focusRowEl.classList.add('js-paused');
+  });
 
-focusWrapEl.addEventListener('mouseleave', () => {
-  focusRowEl.classList.remove('js-paused');
-  focusRowEl.querySelectorAll('.focus-card.card-active').forEach(card => card.classList.remove('card-active'));
-});
+  focusWrapEl.addEventListener('mouseleave', () => {
+    focusRowEl.classList.remove('js-paused');
+    focusRowEl.querySelectorAll('.focus-card.card-active').forEach(card => card.classList.remove('card-active'));
+  });
+}
 
 focusRowEl.querySelectorAll('.focus-card').forEach(card => {
-  card.addEventListener('mouseenter', () => {
-    clearTimeout(focusHoverTimeout);
-    focusHoverTimeout = setTimeout(() => card.classList.add('card-active'), 60);
-  });
-  card.addEventListener('mouseleave', () => {
-    clearTimeout(focusHoverTimeout);
-    card.classList.remove('card-active');
-  });
+  if (finePointer) {
+    card.addEventListener('mouseenter', () => {
+      clearTimeout(focusHoverTimeout);
+      focusHoverTimeout = setTimeout(() => card.classList.add('card-active'), 60);
+    });
+    card.addEventListener('mouseleave', () => {
+      clearTimeout(focusHoverTimeout);
+      card.classList.remove('card-active');
+    });
+  }
+  if (!finePointer) {
+    card.addEventListener('click', () => {
+      clearTimeout(focusHoverTimeout);
+      const wasActive = card.classList.contains('card-active');
+      focusRowEl.querySelectorAll('.focus-card.card-active').forEach(c => c.classList.remove('card-active'));
+      if (!wasActive) {
+        card.classList.add('card-active');
+        focusRowEl.classList.add('js-paused');
+      } else {
+        focusRowEl.classList.remove('js-paused');
+      }
+    });
+  }
 });
 
 focusRow.querySelectorAll('img').forEach(img => {
@@ -93,7 +112,7 @@ const reelVideoObserver = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     const video = entry.target;
     if (entry.isIntersecting) {
-      video.play().catch(() => {});
+      if (video.dataset.userPaused !== 'true') video.play().catch(() => {});
     } else {
       video.pause();
     }
@@ -106,15 +125,27 @@ document.querySelectorAll('.reel video').forEach(video => {
   video.playsInline = true;
   video.preload = 'auto';
   reelVideoObserver.observe(video);
+
+  video.addEventListener('click', event => {
+    event.preventDefault();
+    if (video.paused) {
+      video.dataset.userPaused = 'false';
+      video.play().catch(() => {});
+    } else {
+      video.dataset.userPaused = 'true';
+      video.pause();
+    }
+  });
 });
 
 const scatterItems = [
-  { src: 'images/IMG_1298.JPG.jpeg', label: 'sangeet prep', style: 'top:5%;left:6%;--r:-6deg' },
-  { src: 'images/IMG_2569.JPG.jpeg', label: 'family dance', style: 'top:12%;left:34%;--r:4deg' },
-  { src: 'images/IMG_6114.JPG.jpeg', label: 'the big day', style: 'top:2%;left:60%;--r:-3deg' },
-  { src: 'images/IMG_6621.JPG.jpeg', label: 'stage ready', style: 'top:20%;left:80%;--r:7deg' },
-  { src: 'mehul.jpeg', label: 'mehul', style: 'top:32%;left:16%;--r:5deg' },
-  { src: 'images/Screenshot 2026-08-02 002030.jpg', label: 'all smiles', style: 'top:30%;left:48%;--r:-8deg' }
+  { src: 'images/IMG_8897.jpg', label: 'Full Circle', style: 'top:2%;left:6%;--r:-6deg' },
+  { src: 'images/IMG_9019.jpg', label: 'The Countdown', style: 'top:10%;left:32%;--r:4deg' },
+  { src: 'images/IMG_9116.jpg', label: 'Spotlight', style: 'top:22%;left:58%;--r:-4deg' },
+  { src: 'images/IMG_9138.jpg', label: 'Lift Off', style: 'top:3%;left:82%;--r:6deg' },
+  { src: 'images/IMG_9265.jpg', label: 'Sweet Finale', style: 'top:36%;left:14%;--r:5deg' },
+  { src: 'images/IMG_9275.jpg', label: 'Bow Down', style: 'top:42%;left:42%;--r:-8deg' },
+  { src: 'images/IMG_9394.jpg', label: 'Curtain Call', style: 'top:30%;left:74%;--r:-2deg' }
 ];
 
 const scatterBoard = document.querySelector('#scatterBoard');
@@ -164,22 +195,26 @@ scatterBoard.querySelectorAll('.scatter-card').forEach(card => {
     }
     const now = Date.now();
     const dt = Math.max(now - lastTime, 1);
-    velX = (event.clientX - lastX) / dt;
-    velY = (event.clientY - lastY) / dt;
+    const deltaX = event.clientX - lastX;
+    const deltaY = event.clientY - lastY;
+    velX = deltaX / dt;
+    velY = deltaY / dt;
     lastX = event.clientX;
     lastY = event.clientY;
     lastTime = now;
 
-    currentX += event.movementX;
-    currentY += event.movementY;
+    currentX += deltaX;
+    currentY += deltaY;
     card.style.transform = `translate(${currentX}px,${currentY}px) rotate(var(--r)) scale(1.05)`;
   };
 
-  const onPointerUp = event => {
+  const endDrag = event => {
     if (!isDragging) return;
     isDragging = false;
     card.style.zIndex = 10;
-    card.releasePointerCapture(event.pointerId);
+    if (event && typeof event.releasePointerCapture === 'function') {
+      try { card.releasePointerCapture(event.pointerId); } catch (e) {}
+    }
 
     let flingX = currentX + velX * 120;
     let flingY = currentY + velY * 120;
@@ -196,7 +231,8 @@ scatterBoard.querySelectorAll('.scatter-card').forEach(card => {
 
   card.addEventListener('pointerdown', onPointerDown);
   card.addEventListener('pointermove', onPointerMove);
-  card.addEventListener('pointerup', onPointerUp);
+  card.addEventListener('pointerup', endDrag);
+  card.addEventListener('pointercancel', endDrag);
   card.addEventListener('pointerleave', event => { if (!isDragging) card.style.transform = `translate(${currentX}px,${currentY}px) rotate(var(--r))`; });
 });
 
@@ -205,7 +241,6 @@ const pathItemsData = [
   'images/IMG_2569.JPG.jpeg',
   'images/IMG_6114.JPG.jpeg',
   'images/IMG_6621.JPG.jpeg',
-  'mehul.jpeg',
   'images/Screenshot 2026-08-02 002030.jpg',
   'images/Screenshot 2026-08-02 002042.jpg'
 ];
@@ -235,6 +270,13 @@ function animatePath() {
 }
 animatePath();
 
+function releasePathItem(item) {
+  if (draggedItem === item) {
+    draggedItem = null;
+    item.style.zIndex = '';
+  }
+}
+
 allPathItems.forEach((item, i) => {
   item.addEventListener('pointerdown', event => {
     draggedItem = item;
@@ -251,11 +293,39 @@ allPathItems.forEach((item, i) => {
   });
   item.addEventListener('pointerup', event => {
     if (draggedItem === item) {
-      item.releasePointerCapture(event.pointerId);
-      draggedItem = null;
-      item.style.zIndex = '';
+      try { item.releasePointerCapture(event.pointerId); } catch (e) {}
+      releasePathItem(item);
     }
   });
+  item.addEventListener('pointercancel', () => releasePathItem(item));
+});
+
+// Scale the marquee path to the actual viewport so circles follow the
+// visible dashed line (SVG stretches via preserveAspectRatio="none")
+// and never render off-screen on narrow screens.
+function scalePathString(d, sx, sy) {
+  return d.replace(/([MCLC])([-\d. ]+)/g, (m, cmd, nums) => {
+    const parts = nums.trim().split(/\s+/).map(Number);
+    return cmd + parts.map((v, i) => (i % 2 === 0 ? v * sx : v * sy).toFixed(1)).join(' ');
+  });
+}
+
+function applyScaledPath() {
+  if (!pathStage) return;
+  const w = pathStage.clientWidth || window.innerWidth || 1920;
+  const h = pathStage.clientHeight || 260;
+  const d = scalePathString(
+    'M0 200 C160 60 320 260 480 160 C640 60 800 260 960 160 C1120 60 1280 260 1440 160 C1600 60 1760 200 1920 130',
+    w / 1920,
+    h / 260
+  );
+  allPathItems.forEach(item => { item.style.offsetPath = `path("${d}")`; });
+}
+applyScaledPath();
+let pathResizeTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(pathResizeTimer);
+  pathResizeTimer = setTimeout(applyScaledPath, 150);
 });
 
 // CSS offset-path is well supported in modern Chrome, Edge, Safari, and Firefox — no polyfill needed. If images appear static (not moving) in a very old browser, that's expected graceful degradation; the images will still display correctly, just without the path animation.
