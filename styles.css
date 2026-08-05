@@ -29,6 +29,210 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.48;ba
 @media(max-width:850px){.testimonials{padding:110px 24px}.testimonials-head{margin-bottom:48px}}
 @media(max-width:560px){.testimonials{padding:90px 18px}.testimonial-card{width:320px}.testimonial-card-inner{padding:26px 22px 22px}.testimonial-text{font-size:15px}.testimonials-sub{font-size:14px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+/* =========================================================
+   INTRO LOADER — Hand-Drawn Paper Scrapbook Aesthetic
+   ========================================================= */
+body.loader-locked {
+  overflow: hidden !important;
+}
+
+#introLoader {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.75s cubic-bezier(0.25, 1, 0.5, 1), transform 0.75s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: opacity, transform;
+}
+
+#introLoader.exiting {
+  opacity: 0;
+  transform: translateY(-25px);
+  pointer-events: none;
+}
+
+.loader-ambient {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.loader-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 520px;
+  height: 520px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(37, 32, 156, 0.14) 0%, rgba(37, 32, 156, 0.04) 40%, rgba(250, 248, 244, 0) 70%);
+  filter: blur(40px);
+  pointer-events: none;
+  opacity: 0;
+  animation: loaderFadeIn 1.2s ease forwards;
+}
+
+.loader-grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--line, rgba(37,32,156,0.19)) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.loader-doodles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.loader-doodle {
+  position: absolute;
+  font-family: "Caveat", cursive;
+  color: var(--navy);
+  opacity: 0;
+  animation: doodleFloat var(--dur, 4.5s) ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+.loader-doodle.d1 { top: 18%; left: 14%; --rot: -15deg; font-size: 38px; --dur: 4.2s; animation-delay: 0.1s; }
+.loader-doodle.d2 { top: 22%; right: 16%; --rot: 18deg; font-size: 42px; --dur: 5.1s; animation-delay: 0.3s; }
+.loader-doodle.d3 { bottom: 20%; left: 18%; --rot: -10deg; font-size: 36px; --dur: 4.6s; animation-delay: 0.2s; }
+.loader-doodle.d4 { bottom: 24%; right: 14%; --rot: 22deg; font-size: 40px; --dur: 5.4s; animation-delay: 0.4s; }
+.loader-doodle.d5 { top: 48%; left: 8%; --rot: -25deg; font-size: 32px; --dur: 3.9s; animation-delay: 0.15s; }
+
+.loader-sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.loader-sparkle-dot {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--navy, #25209c);
+  opacity: 0;
+  animation: sparkleFloat var(--sdur, 4.5s) ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.loader-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 18px;
+  padding: 20px;
+}
+
+.loader-logo {
+  width: 150px;
+  max-width: 36vmin;
+  height: auto;
+  opacity: 0;
+  transform: scale(0.82);
+  transition: opacity 0.85s ease, transform 0.85s cubic-bezier(0.18, 0.89, 0.32, 1.15);
+  will-change: transform, opacity;
+}
+
+.loader-logo.in {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.loader-logo.breathe {
+  animation: logoBreathing 2.2s ease-in-out infinite;
+}
+
+.loader-logo.swell {
+  animation: logoSwell 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.loader-tagline {
+  font-family: "DM Serif Display", serif;
+  font-style: italic;
+  font-size: 20px;
+  letter-spacing: 0.12em;
+  color: var(--navy);
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.85s ease, transform 0.85s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform, opacity;
+}
+
+.loader-tagline.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes loaderFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes doodleFloat {
+  0% { opacity: 0.55; transform: translate(0, 0) rotate(var(--rot, 0deg)); }
+  50% { opacity: 0.85; transform: translate(6px, -12px) rotate(calc(var(--rot, 0deg) + 6deg)); }
+  100% { opacity: 0.6; transform: translate(-4px, -20px) rotate(calc(var(--rot, 0deg) - 4deg)); }
+}
+
+@keyframes sparkleFloat {
+  0% { opacity: 0.3; transform: translate(0, 0) scale(0.7); }
+  25% { opacity: 0.7; transform: translate(12px, -18px) scale(1.1); }
+  50% { opacity: 0.5; transform: translate(-8px, -32px) scale(0.9); }
+  75% { opacity: 0.75; transform: translate(6px, -14px) scale(1.15); }
+  100% { opacity: 0.3; transform: translate(0, 0) scale(0.7); }
+}
+
+@keyframes logoBreathing {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+@keyframes logoSwell {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1.02); }
+}
+
+@media (max-width: 768px) {
+  .loader-logo { width: 130px; }
+  .loader-tagline { font-size: 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader-doodle, .loader-sparkle-dot, .loader-glow {
+    animation: none !important;
+    opacity: 0.25 !important;
+  }
+  .loader-logo {
+    transition: opacity 0.3s ease !important;
+    transform: none !important;
+  }
+  .loader-logo.breathe, .loader-logo.swell {
+    animation: none !important;
+    transform: none !important;
+  }
+  .loader-tagline {
+    transition: opacity 0.3s ease !important;
+    transform: none !important;
+  }
+  #introLoader {
+    transition: opacity 0.3s ease !important;
+    transform: none !important;
+  }
+}
 .scatter{min-height:640px;position:relative;overflow:hidden}
 .scatter .section-heading{flex-wrap:wrap}
 .scatter-quote{font:italic 20px/1.5 "DM Serif Display",serif;color:var(--ink);max-width:340px;margin:0}
