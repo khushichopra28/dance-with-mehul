@@ -697,3 +697,152 @@ const statsObserver = new IntersectionObserver(entries => {
 
 const statsGridEl = document.querySelector('#statsGrid');
 if (statsGridEl) statsObserver.observe(statsGridEl);
+
+/* Intro loader orchestration */
+(function(){
+  function createParticles(container, count = 28) {
+    // fewer, subtler particles for premium feel
+    const actual = Math.max(6, Math.round(count * 0.35));
+    for (let i = 0; i < actual; i++) {
+      const p = document.createElement('span');
+      p.className = 'particle';
+      const size = Math.round(2 + Math.random() * 3);
+      p.style.width = `${size}px`;
+      p.style.height = `${size}px`;
+      p.style.left = `${10 + Math.random() * 80}%`;
+      // keep particles around the logo area but not covering it
+      p.style.top = `${28 + Math.random() * 36}%`;
+      p.style.opacity = `${0.25 + Math.random() * 0.45}`;
+      p.style.animationDuration = `${4200 + Math.random() * 4200}ms`;
+      p.style.animationDelay = `${Math.random() * 1200}ms`;
+      container.appendChild(p);
+    }
+  }
+
+  // Helper to safely decode/load critical images without blocking on missing or cached images
+  function safeDecodeImage(img) {
+    if (!img) return Promise.resolve();
+    if (img.complete && img.naturalWidth !== 0) return Promise.resolve();
+    if (typeof img.decode === 'function') {
+      return img.decode().catch(() => Promise.resolve());
+    }
+    return new Promise(resolve => {
+      const done = () => {
+        img.removeEventListener('load', done);
+        img.removeEventListener('error', done);
+        resolve();
+      };
+      img.addEventListener('load', done, { once: true });
+      img.addEventListener('error', done, { once: true });
+    });
+  }
+
+  function initIntroLoader() {
+    const loader = document.getElementById('introLoader');
+    if (!loader) return;
+
+    document.body.classList.add('loader-locked');
+
+    const logo = loader.querySelector('.loader-logo');
+    const tagline = loader.querySelector('.loader-tagline');
+    const sparklesContainer = document.getElementById('loaderSparkles');
+    const heroImg = document.querySelector('.hero-image');
+
+    // Create a scattered handful of soft gold sparkle dots
+    if (sparklesContainer) {
+      const particleCount = 12;
+      const fragment = document.createDocumentFragment();
+      for (let i = 0; i < particleCount; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'loader-sparkle-dot';
+        const size = (3 + Math.random() * 3).toFixed(1);
+        const top = (10 + Math.random() * 80).toFixed(1);
+        const left = (10 + Math.random() * 80).toFixed(1);
+        const sdur = (3.5 + Math.random() * 2.5).toFixed(1);
+        const delay = (Math.random() * 0.8).toFixed(2);
+        dot.style.cssText = `width:${size}px;height:${size}px;top:${top}%;left:${left}%;--sdur:${sdur}s;animation-delay:${delay}s;`;
+        fragment.appendChild(dot);
+      }
+      sparklesContainer.appendChild(fragment);
+    }
+
+    // Timeline stage 1: Logo scales & fades in (starts at 400ms, transition takes ~850ms)
+    setTimeout(() => {
+      if (logo) logo.classList.add('in');
+    }, 400);
+
+    // Timeline stage 2: Tagline fades & rises in (starts at 1300ms, well after logo is settled)
+    setTimeout(() => {
+      if (tagline) tagline.classList.add('in');
+    }, 1300);
+
+    // Timeline stage 3: Logo breathing idle loop starts after tagline has appeared
+    setTimeout(() => {
+      if (logo && logo.classList.contains('in')) {
+        logo.classList.add('breathe');
+      }
+    }, 1500);
+
+    // Readiness checking: document.fonts.ready, logo.png, hero.png
+    const fontsPromise = document.fonts ? document.fonts.ready.catch(() => {}) : Promise.resolve();
+    const assetsPromise = Promise.all([
+      fontsPromise,
+      safeDecodeImage(logo),
+      safeDecodeImage(heroImg)
+    ]);
+
+    // Enforce MINIMUM loader display time — 2800ms so every animation stage
+    // (logo in, tagline in, breathing) has at least 1+ second of settled visibility
+    // before exit begins. This prevents the "flash" on fast/cached loads.
+    const minTimerPromise = new Promise(resolve => setTimeout(resolve, 2800));
+    const readyWithMinTimer = Promise.all([assetsPromise, minTimerPromise]);
+
+    // Enforce MAXIMUM loader display ceiling — 5000ms hard cap.
+    // On a normal connection assets resolve in <1s, so the min timer (2800ms) is
+    // what actually governs. This ceiling only fires if assets truly stall.
+    const maxTimerPromise = new Promise(resolve => setTimeout(resolve, 5000));
+
+    // Guard flag against double exit triggers
+    let isExiting = false;
+
+    function triggerExit() {
+      if (isExiting) return;
+      isExiting = true;
+
+      // Timeline stage 4: Stop breathing loop cleanly and trigger ONE final gentle swell
+      if (logo) {
+        logo.classList.remove('breathe');
+        logo.classList.add('swell');
+      }
+
+      // Timeline stage 5: ONLY after swell visibly completes (~500ms), trigger exit fade.
+      // These are sequential — the swell must finish before the fade begins.
+      setTimeout(() => {
+        loader.classList.add('exiting');
+        loader.setAttribute('aria-hidden', 'true');
+
+        let cleanedUp = false;
+        const finishExit = () => {
+          if (cleanedUp) return;
+          cleanedUp = true;
+          document.body.classList.remove('loader-locked');
+          if (loader && loader.parentNode) {
+            loader.parentNode.removeChild(loader);
+          }
+        };
+
+        loader.addEventListener('transitionend', finishExit, { once: true });
+        // Fallback timer in case transitionend is skipped or interrupted
+        setTimeout(finishExit, 850);
+      }, 500);
+    }
+
+    Promise.race([readyWithMinTimer, maxTimerPromise]).then(triggerExit);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initIntroLoader);
+  } else {
+    initIntroLoader();
+  }
+})();
