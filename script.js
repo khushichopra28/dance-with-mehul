@@ -471,7 +471,7 @@ const teamMembers = [
   { id: 'diya', name: 'Diya', tagline: 'makes the hardest steps look easy', src: 'team/diya.png', r: 3, doodle: '♡' },
   { id: 'khushi', name: 'Khushi', tagline: 'the calm before the chaos', src: 'team/khushi.png', r: -2, doodle: '♪' },
   { id: 'krishi', name: 'Krishi', tagline: 'always first on the floor', src: 'team/krishi.png', r: 5, doodle: '✦' },
-  { id: 'pranav', name: 'Pranav', tagline: 'turns rehearsals into memories', src: 'team/pranav.png', r: -3, doodle: '♪' },
+  { id: 'pranay', name: 'Pranay', tagline: 'turns rehearsals into memories', src: 'team/pranav.png', r: -3, doodle: '♪' },
   { id: 'shreya', name: 'Shreya', tagline: 'the reason everyone smiles on cue', src: 'team/shreya.png', r: 4, doodle: '♡' }
 ];
 
