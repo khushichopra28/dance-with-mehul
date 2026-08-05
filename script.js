@@ -2,19 +2,131 @@ const reelVideos = [
   ['reels/IMG_7630.mp4','after class'], ['reels/IMG_7631.mp4','on stage'], ['reels/IMG_7632.mp4','the warm up'], ['reels/IMG_7633.mp4','full out'], ['reels/IMG_7634.mp4','one more run'], ['reels/IMG_7635.mp4','dance break'], ['reels/IMG_7636.mp4','after class'], ['reels/IMG_7637.mp4','on stage'], ['reels/IMG_7638.mp4','the warm up'], ['reels/IMG_7678.mp4','line up'], ['reels/IMG_7679.mp4','count it out'], ['reels/IMG_7680.mp4','side by side'], ['reels/IMG_7681.mp4','the dip'], ['reels/IMG_7682.mp4','freeze frame'], ['reels/IMG_9181.mp4','sneak peek']
 ];
 const galleryImages = [
-  ['images/IMG_1298.JPG.jpeg','sangeet prep'], ['images/IMG_2569.JPG.jpeg','family dance'], ['images/IMG_6114.JPG.jpeg','the big day'], ['images/IMG_6621.JPG.jpeg','stage ready'], ['images/Screenshot 2026-08-02 002030.jpg','all smiles'], ['images/Screenshot 2026-08-02 002042.jpg','dancing together']
+  ['images/IMG_1298.JPG.jpeg','sangeet prep'], ['images/IMG_2569.JPG.jpeg','team meet up'], ['images/IMG_6114.JPG.jpeg','the big day'], ['images/IMG_6621.JPG.jpeg','stage ready'], ['images/Screenshot 2026-08-02 002030.jpg','all smiles'], ['images/Screenshot 2026-08-02 002042.jpg','dancing together']
 ];
-const testimonials = [
-  ['“Mehul choreographed our entire sangeet — from my entry to the family number. Every single person felt included, even the ones with two left feet!”','Ananya & Rohan, wedding sangeet'],
-  ['“We were so nervous about our first dance as a couple, but Mehul made it feel effortless. He took our song, our story, and turned it into something magical.”','Priya & Arjun, first dance'],
-  ['“From the mehendi to the reception, Mehul helped us plan dance performances for every function. Our families are still talking about it months later!”','Neha & Vikram, full wedding']
+const TRUE_REVIEWS = [
+  { text: 'It was amazing. Thank you so much!', initials: 'AR', badge: 'Verified Couple', heart: true, tone: 0 },
+  { text: 'Thank you for all your effort and time. Everyone loved our dance. We\'ll definitely stay in touch!', initials: 'PK', badge: 'Verified Client', heart: false, tone: 1 },
+  { text: 'You were incredibly patient and adjusted everything around our schedules. You kept everyone motivated and made learning fun. Highly recommended.', initials: 'SN', badge: 'Verified Couple', heart: false, tone: 2 },
+  { text: 'The performances were mesmerizing. Every dance had so much grace, passion and energy. Thank you for sharing such beautiful memories.', initials: 'MG', badge: 'Verified Client', heart: false, tone: 3 },
+  { text: 'Thank you for everything', initials: 'VD', badge: 'Verified Couple', heart: true, tone: 0 },
+  { text: 'Everyone loved the execution. It was beautifully done. Thank you!', initials: 'RS', badge: 'Verified Client', heart: false, tone: 1 },
+  { text: 'I got lots of positive feedback from my solo performance. Looking forward to working together again.', initials: 'KC', badge: 'Verified Client', heart: false, tone: 2 },
+  { text: 'The event turned out beautifully. Thank you for your patience, cooperation and smooth coordination throughout.', initials: 'AB', badge: 'Verified Couple', heart: false, tone: 3 },
+  { text: 'We loved every choreography. Every dance turned out so well.', initials: 'JT', badge: 'Verified Couple', heart: false, tone: 0 },
+  { text: 'It was a great event. Thank you so much!', initials: 'NP', badge: 'Verified Client', heart: true, tone: 1 },
+  { text: 'Your choreography made our wedding unforgettable. Your creativity, dedication and attention to detail made every performance special.', initials: 'DR', badge: 'Verified Couple', heart: false, tone: 2 }
 ];
+
+const reviewsToneTints = ['#F9F7F4', '#EDEAFD', '#F6EFE2', '#E7F0F7'];
+const reviewsCardMarkup = (review, index) => `
+  <li class="testimonial-card tone-${review.tone}" style="--tint:${reviewsToneTints[review.tone]}" data-index="${index}">
+    <div class="testimonial-card-inner">
+      <span class="testimonial-accent"></span>
+      <span class="testimonial-quote" aria-hidden="true"></span>
+      <p class="testimonial-text">${review.text}${review.heart ? ' <span class="testimonial-heart">❤️</span>' : ''}</p>
+      <footer class="testimonial-meta">
+        <span class="testimonial-avatar" aria-hidden="true">${review.initials}</span>
+        <span class="testimonial-badge"><span class="badge-dot"></span>${review.badge}</span>
+      </footer>
+    </div>
+  </li>`;
+
+const testimonialTrack = document.querySelector('#testimonialTrack');
+const testimonialMarquee = document.querySelector('#testimonialMarquee');
+
+if (testimonialTrack && testimonialMarquee) {
+  // Duplicate the set of cards internally for a seamless, reset-free loop.
+  const set = TRUE_REVIEWS.map(reviewsCardMarkup).join('');
+  testimonialTrack.innerHTML = set + set;
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = window.matchMedia('(max-width: 560px)').matches;
+
+  let offset = 0;
+  let baseSpeed = isMobile ? 0.35 : 0.6; // px per frame — slower on mobile
+  let paused = false;
+  let dragging = false;
+  let lastX = 0;
+  let halfWidth = 0;
+  let raf = null;
+
+  function measure() {
+    halfWidth = testimonialTrack.scrollWidth / 2;
+  }
+  measure();
+  window.addEventListener('resize', measure);
+
+  function wrap() {
+    if (halfWidth <= 0) return;
+    if (offset > 0) offset -= halfWidth;
+    if (offset <= -halfWidth) offset += halfWidth;
+  }
+
+  function render() {
+    testimonialTrack.style.transform = `translateX(${offset}px)`;
+  }
+
+  function step() {
+    if (!dragging && !paused) {
+      offset -= baseSpeed;
+      wrap();
+      render();
+    }
+    raf = requestAnimationFrame(step);
+  }
+
+  if (prefersReducedMotion) {
+    render();
+  } else {
+    raf = requestAnimationFrame(step);
+  }
+
+  // Pause the carousel on hover.
+  testimonialMarquee.addEventListener('mouseenter', () => { if (!dragging) paused = true; });
+  testimonialMarquee.addEventListener('mouseleave', () => { paused = false; });
+
+  // Drag / swipe support (auto-pauses while dragging).
+  testimonialTrack.classList.add('is-draggable');
+
+  testimonialTrack.addEventListener('pointerdown', (e) => {
+    if (prefersReducedMotion) return;
+    dragging = true;
+    paused = true;
+    lastX = e.clientX;
+    testimonialTrack.classList.add('is-dragging');
+    try { testimonialTrack.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+
+  testimonialTrack.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - lastX;
+    lastX = e.clientX;
+    offset += dx;
+    wrap();
+    render();
+  });
+
+  const endDrag = (e) => {
+    if (!dragging) return;
+    dragging = false;
+    testimonialTrack.classList.remove('is-dragging');
+    paused = false;
+    try { testimonialTrack.releasePointerCapture(e.pointerId); } catch (err) {}
+  };
+  testimonialTrack.addEventListener('pointerup', endDrag);
+  testimonialTrack.addEventListener('pointercancel', endDrag);
+}
 const imageUrl = (id, width = 500) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${width}&q=85`;
 const reelMarkup = reelVideos.map(([src,label]) => `<article class="reel" data-label="${label}"><video src="${src}" muted loop playsinline preload="metadata" data-label="${label}" onerror="console.log('Reel video failed to load:', this.src, this.error)"></video></article>`).join('');
 document.querySelector('#reelsOne').innerHTML = reelMarkup + reelMarkup;
 document.querySelector('#reelsTwo').innerHTML = [...reelVideos].reverse().map(([src,label]) => `<article class="reel" data-label="${label}"><video src="${src}" muted loop playsinline preload="metadata" data-label="${label}" onerror="console.log('Reel video failed to load:', this.src, this.error)"></video></article>`).join('').repeat(2);
-document.querySelector('#galleryBoard').innerHTML = galleryImages.map(([src,label], index) => `<figure class="gallery-item" style="--r:${[-3,2,-1,4,-4,2][index]}deg"><img loading="lazy" src="${src}" alt="${label}"><span>${label}</span></figure>`).join('');
-document.querySelector('#testimonialGrid').innerHTML = testimonials.map(([quote, name], index) => `<article class="testimonial" style="--r:${[-2,2,-1][index]}deg"><blockquote>${quote}</blockquote><footer>— ${name}</footer></article>`).join('');
+document.querySelector('#galleryBoard').innerHTML = galleryImages.map(([src,label], index) => `
+  <figure class="gallery-item" style="--r:${[-3,2,-1,4,-4,2][index]}deg">
+    <img loading="lazy" src="${src}" alt="${label}" ${index === 3 ? 'style="object-position: center 18%;"' : ''}>
+    <span>${label}</span>
+  </figure>
+`).join('');
 
 const focusItems = [
   { src: 'images/IMG_1257.jpg', title: 'Getting Ready' },
@@ -177,7 +289,6 @@ const scatterBoard = document.querySelector('#scatterBoard');
 scatterBoard.innerHTML = scatterItems.map((item, i) => `
   <figure class="scatter-card polaroid" data-index="${i}" style="${item.style}">
     <img src="${item.src}" alt="${item.label}" draggable="false">
-    <figcaption>${item.label}</figcaption>
   </figure>
 `).join('');
 
