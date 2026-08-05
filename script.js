@@ -90,21 +90,46 @@ menuButton.addEventListener('click', () => { const isOpen = nav.classList.toggle
 nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => { nav.classList.remove('open'); menuButton.setAttribute('aria-expanded', 'false'); }));
 
 const WHATSAPP_NUMBER = '918056707070';
+const SHEETS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxhET8uf25yV6S2wtYYvlb7gI-AvpOj6fLTUFlSDkGNA2NRLLnLdzPJzh_W4w7D9FsF/exec';
 
-document.querySelector('#contactForm').addEventListener('submit', event => {
-  event.preventDefault();
-  const form = event.currentTarget;
-  const name = form.querySelector('[name="name"]').value.trim();
-  const email = form.querySelector('[name="email"]').value.trim();
-  const message = form.querySelector('[name="message"]').value.trim();
+const contactFormEl = document.querySelector('#contactForm');
 
-  const whatsappText = `Hi Mehul! I'd love to plan a wedding dance.%0A%0AName: ${encodeURIComponent(name)}%0AEmail: ${encodeURIComponent(email)}%0A%0AVision: ${encodeURIComponent(message)}`;
-  const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappText}`;
+if (contactFormEl) {
+  contactFormEl.addEventListener('submit', event => {
+    event.preventDefault();
+    const form = event.currentTarget;
 
-  form.querySelector('.form-message').textContent = 'Opening WhatsApp — just hit send!';
-  window.open(whatsappURL, '_blank');
-  form.reset();
-});
+    const nameField = form.querySelector('[name="name"]');
+    const contactField = form.querySelector('[name="contact"]');
+    const messageField = form.querySelector('[name="message"]');
+
+    if (!nameField || !contactField || !messageField) {
+      console.error('Contact form fields not found. Check name attributes match: name, contact, message.');
+      form.querySelector('.form-message').textContent = 'Something went wrong — please try again.';
+      return;
+    }
+
+    const name = nameField.value.trim();
+    const contact = contactField.value.trim();
+    const message = messageField.value.trim();
+
+    fetch(SHEETS_WEBHOOK_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, contact, message })
+    }).catch(err => console.error('Sheets webhook failed:', err));
+
+    const whatsappText = `Hi Mehul! I'd love to plan a wedding dance.%0A%0AName: ${encodeURIComponent(name)}%0AContact: ${encodeURIComponent(contact)}%0A%0AVision: ${encodeURIComponent(message)}`;
+    const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappText}`;
+
+    form.querySelector('.form-message').textContent = 'Opening WhatsApp — just hit send!';
+    window.open(whatsappURL, '_blank');
+    form.reset();
+  });
+} else {
+  console.error('#contactForm not found in the DOM.');
+}
 let lastSparkle = 0;
 document.addEventListener('pointermove', event => { if (event.pointerType === 'touch' || Date.now() - lastSparkle < 110) return; lastSparkle = Date.now(); const sparkle = document.createElement('span'); sparkle.className = 'sparkle'; sparkle.textContent = Math.random() > .5 ? '✦' : '·'; sparkle.style.left = `${event.clientX}px`; sparkle.style.top = `${event.clientY}px`; document.body.append(sparkle); sparkle.addEventListener('animationend', () => sparkle.remove()); });
 
@@ -468,3 +493,96 @@ bgMusic.addEventListener('pause', stopEmojiFloat);
 bgMusic.addEventListener('volumechange', syncEmojiFloatState);
 musicToggle.addEventListener('click', () => setTimeout(syncEmojiFloatState, 50));
 window.addEventListener('load', () => setTimeout(syncEmojiFloatState, 300));
+
+const nameGate = document.querySelector('#nameGate');
+const nameGateInput = document.querySelector('#nameGateInput');
+const nameGateSubmit = document.querySelector('#nameGateSubmit');
+const customCursor = document.querySelector('#customCursor');
+const cursorLabel = document.querySelector('#cursorLabel');
+
+const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+let visitorName = sessionStorage.getItem('visitorName');
+
+function activateCustomCursor(name) {
+  if (isCoarsePointer) return;
+  cursorLabel.textContent = name;
+  customCursor.classList.add('active');
+  document.body.style.cursor = 'none';
+
+  let mouseX = -100, mouseY = -100;
+  let arrowX = -100, arrowY = -100;
+  let labelX = -100, labelY = -100;
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  function animateCursor() {
+    arrowX += (mouseX - arrowX) * 0.35;
+    arrowY += (mouseY - arrowY) * 0.35;
+    labelX += (mouseX - labelX) * 0.18;
+    labelY += (mouseY - labelY) * 0.18;
+
+    document.querySelector('#cursorArrow').style.transform = `translate(${arrowX}px, ${arrowY}px)`;
+    cursorLabel.style.transform = `translate(${labelX + 22}px, ${labelY + 14}px)`;
+
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+}
+
+if (!isCoarsePointer) {
+  if (visitorName) {
+    activateCustomCursor(visitorName);
+  } else {
+    nameGate.classList.add('open');
+  }
+}
+
+nameGateSubmit.addEventListener('click', () => {
+  const name = nameGateInput.value.trim();
+  if (!name) {
+    nameGateInput.focus();
+    return;
+  }
+  sessionStorage.setItem('visitorName', name);
+  nameGate.classList.remove('open');
+  activateCustomCursor(name);
+});
+
+nameGateInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') nameGateSubmit.click();
+});
+
+const statNumbers = document.querySelectorAll('.stat-number');
+
+function animateCountUp(el, duration = 1600) {
+  const target = parseInt(el.dataset.target, 10);
+  const suffix = el.dataset.suffix || '';
+  const start = performance.now();
+
+  function tick(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const value = Math.floor(eased * target);
+    el.textContent = value + suffix;
+    if (progress < 1) requestAnimationFrame(tick);
+    else el.textContent = target + suffix;
+  }
+  requestAnimationFrame(tick);
+}
+
+const statsObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      statNumbers.forEach((el, i) => {
+        setTimeout(() => animateCountUp(el), i * 150);
+      });
+      statsObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: .4 });
+
+const statsGridEl = document.querySelector('#statsGrid');
+if (statsGridEl) statsObserver.observe(statsGridEl);
