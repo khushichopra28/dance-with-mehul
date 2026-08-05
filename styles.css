@@ -415,4 +415,12 @@ body.loader-locked {
 .stat-label{font:11px "DM Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:rgba(250,248,244,.75)}
 @media(max-width:850px){.stats-grid{grid-template-columns:repeat(2,1fr);gap:40px 20px}.stats-strip{padding:55px max(6vw,24px)}}
 @media(max-width:560px){.stats-grid{grid-template-columns:1fr;gap:34px}.stat-number{font-size:44px}.stats-strip{padding:45px 20px}}
-
+/* Force standard text representation for arrow icons across mobile iOS/Android */
+.arrow-text {
+  font-family: Montserrat, "DM Mono", Arial, sans-serif !important;
+  font-variant-emoji: text;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  line-height: 1;
+}
