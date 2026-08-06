@@ -605,67 +605,6 @@ bgMusic.addEventListener('volumechange', syncEmojiFloatState);
 musicToggle.addEventListener('click', () => setTimeout(syncEmojiFloatState, 50));
 window.addEventListener('load', () => setTimeout(syncEmojiFloatState, 300));
 
-const nameGate = document.querySelector('#nameGate');
-const nameGateInput = document.querySelector('#nameGateInput');
-const nameGateSubmit = document.querySelector('#nameGateSubmit');
-const customCursor = document.querySelector('#customCursor');
-const cursorLabel = document.querySelector('#cursorLabel');
-
-const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
-let visitorName = sessionStorage.getItem('visitorName');
-
-function activateCustomCursor(name) {
-  if (isCoarsePointer) return;
-  cursorLabel.textContent = name;
-  customCursor.classList.add('active');
-  document.body.style.cursor = 'none';
-
-  let mouseX = -100, mouseY = -100;
-  let arrowX = -100, arrowY = -100;
-  let labelX = -100, labelY = -100;
-
-  document.addEventListener('mousemove', e => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-  });
-
-  function animateCursor() {
-    arrowX += (mouseX - arrowX) * 0.35;
-    arrowY += (mouseY - arrowY) * 0.35;
-    labelX += (mouseX - labelX) * 0.18;
-    labelY += (mouseY - labelY) * 0.18;
-
-    document.querySelector('#cursorArrow').style.transform = `translate(${arrowX}px, ${arrowY}px)`;
-    cursorLabel.style.transform = `translate(${labelX + 22}px, ${labelY + 14}px)`;
-
-    requestAnimationFrame(animateCursor);
-  }
-  animateCursor();
-}
-
-if (!isCoarsePointer) {
-  if (visitorName) {
-    activateCustomCursor(visitorName);
-  } else {
-    nameGate.classList.add('open');
-  }
-}
-
-nameGateSubmit.addEventListener('click', () => {
-  const name = nameGateInput.value.trim();
-  if (!name) {
-    nameGateInput.focus();
-    return;
-  }
-  sessionStorage.setItem('visitorName', name);
-  nameGate.classList.remove('open');
-  activateCustomCursor(name);
-});
-
-nameGateInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') nameGateSubmit.click();
-});
-
 const statNumbers = document.querySelectorAll('.stat-number');
 
 function animateCountUp(el, duration = 1600) {

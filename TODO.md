@@ -1,10 +1,9 @@
-# Intro Loader — Asset-Driven Rework
+# TODO — Remove name-entry popup & custom cursor (keep sparkle trail)
 
-## Steps
-- [x] Add a `loadImage` helper (decode/complete/load promise) inside the intro loader IIFE
-- [x] Build `assetsReady` = Promise.all(fonts.ready, logo img, hero img)
-- [x] Enforce MINIMUM display (~1.2s) via Promise.all with a 1200ms timer
-- [x] Enforce MAXIMUM display (~2.8s) via Promise.race against a 2800ms timeout
-- [x] Keep visual stages (logo-in 300ms, tagline 1500ms) unchanged
-- [x] Trigger glow/logo-peak + fade-out/remove at the new resolution point
-- [x] Ensure loader does NOT wait on reels/gallery/team/audio
+- [x] Analyze files (index.html, script.js, styles.css)
+- [x] Get plan approval
+- [x] STEP 1: Remove name-gate + custom-cursor div blocks from index.html
+- [x] STEP 2: Remove name-gate/custom-cursor JS from script.js
+- [x] STEP 3: Remove name-gate/custom-cursor CSS from styles.css
+- [x] STEP 4: Confirm `document.body.style.cursor = 'none'` removed (in script.js block)
+- [x] STEP 5: Verify no leftover references (nameGate/customCursor/cursorLabel/cursorArrow/visitorName)
